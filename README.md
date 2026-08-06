@@ -1,0 +1,217 @@
+# Balance de proyectos
+
+App web personal para llevar los ingresos y egresos de mis proyectos de
+software, en pesos y en dólares. Reemplaza una planilla de Google Sheets.
+
+Un solo usuario, autenticación con Google, base en Supabase, deploy en Vercel.
+
+## Qué hace
+
+- **Balance general** con tarjetas de ingresos, egresos, balance neto y
+  balance proyectado (incluyendo los planificados), conmutador global
+  **ARS / USD** y filtros de rango y estado.
+- **Vista por proyecto** con la misma estructura, incluyendo su porción
+  prorrateada de los gastos compartidos.
+- **Movimientos**: tabla ordenable y filtrable por fecha, proyecto,
+  categoría, tipo, estado y moneda, con búsqueda, edición, borrado y
+  export a CSV respetando los filtros activos.
+- **Recurrentes**: ABM de movimientos que se repiten. El cron diario los
+  genera como planificados, sin duplicar.
+- **Comprobantes**: subida opcional de imagen o PDF a un bucket privado,
+  con preview y descarga por URL firmada.
+- **Carga rápida** con `⌘K` / `Ctrl+K` desde cualquier pantalla.
+
+## Las tres reglas que importan
+
+### 1. El tipo de cambio se congela
+
+Cada movimiento guarda `monto_ars`, `monto_usd`, `tasa_usada` y
+`tasa_fecha` en el momento de la carga. **Los montos históricos nunca se
+recalculan con la cotización actual.** Un gasto de abril de USD 20 vale lo
+que valía en abril.
+
+La referencia es el **dólar Oficial BNA, valor venta**, que un cron trae
+todos los días de [dolarapi.com](https://dolarapi.com/v1/dolares/oficial).
+Al cargar un movimiento se usa la cotización de su fecha; si no existe (fin
+de semana, feriado, carga retroactiva) se usa la última anterior y la UI lo
+avisa. La tasa también se puede forzar a mano.
+
+La única recotización de la app es marcar un planificado como efectuado:
+ahí se recalcula contra la fecha real de efectivización.
+
+### 2. Los gastos compartidos se prorratean al vuelo
+
+Un movimiento sin proyecto (`project_id = null`) es compartido: sirve a
+todos los proyectos. En las vistas por proyecto se reparte entre los
+**activos**, ponderado por su `peso_prorrateo`.
+
+El reparto se calcula en cada consulta, **nunca se guardan filas
+duplicadas**. El reparto usa el método de resto mayor sobre centavos
+enteros, así la suma de los balances por proyecto da exactamente el
+balance general (la pantalla de Proyectos verifica y muestra ese chequeo).
+
+### 3. El importe real es el que escribiste
+
+El formulario muestra ARS y USD a la vez. El campo donde escribís queda
+como `moneda_origen` y es el importe real; el otro es derivado y se
+recalcula solo, incluso si cambiás la fecha.
+
+## Puesta en marcha
+
+### 1. Crear el proyecto en Supabase
+
+1. Entrá a [supabase.com/dashboard](https://supabase.com/dashboard) y creá
+   un proyecto nuevo. Elegí la región más cercana (`South America (São
+   Paulo)` para Argentina).
+2. Guardá la contraseña de la base que te pide: la vas a necesitar si
+   después querés conectarte por `psql`.
+3. Esperá a que termine de aprovisionarse (un par de minutos).
+
+### 2. Correr las migraciones
+
+**Opción A — desde el dashboard (la más rápida):**
+
+Abrí el **SQL Editor** y ejecutá, en este orden, el contenido de:
+
+1. `supabase/migrations/20260101000000_schema.sql`
+2. `supabase/migrations/20260101000001_rls.sql`
+3. `supabase/migrations/20260101000002_storage.sql`
+
+**Opción B — con la CLI:**
+
+```bash
+npx supabase login
+npx supabase link --project-ref <tu-project-ref>
+npx supabase db push
+```
+
+El `project-ref` es la parte del medio de la URL del proyecto:
+`https://<project-ref>.supabase.co`.
+
+### 3. Configurar el OAuth de Google
+
+**En la consola de Google Cloud:**
+
+1. Entrá a [console.cloud.google.com](https://console.cloud.google.com) y
+   creá un proyecto (o usá uno existente).
+2. **APIs & Services → OAuth consent screen**: elegí *External*, completá
+   nombre de la app y tu mail, y agregate a vos mismo en *Test users*. Si
+   la app es solo para vos, no hace falta publicarla.
+3. **APIs & Services → Credentials → Create credentials → OAuth client ID**:
+   - Tipo: *Web application*
+   - **Authorized redirect URI**:
+     `https://<tu-project-ref>.supabase.co/auth/v1/callback`
+
+     Ojo: acá va la URL de **Supabase**, no la de tu app.
+4. Copiá el **Client ID** y el **Client secret**.
+
+**En Supabase:**
+
+1. **Authentication → Providers → Google**: activalo y pegá el Client ID y
+   el Client secret.
+2. **Authentication → URL Configuration**:
+   - *Site URL*: `http://localhost:3000` en desarrollo, la URL de Vercel
+     en producción.
+   - *Redirect URLs*: agregá `http://localhost:3000/**` y
+     `https://<tu-app>.vercel.app/**`.
+
+### 4. Variables de entorno
+
+Copiá `.env.example` a `.env.local` y completá:
+
+| Variable | Dónde sale | Notas |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Settings → API | Pública. |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Settings → API | Pública, protegida por RLS. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API | **Secreta.** Saltea RLS. Solo server-side. |
+| `NEXT_PUBLIC_SITE_URL` | Vos | `http://localhost:3000` en local. |
+| `CRON_SECRET` | Vos | `openssl rand -hex 32` |
+
+```bash
+cp .env.example .env.local
+```
+
+### 5. Correr en local
+
+```bash
+npm install
+npm run dev
+```
+
+Abrí `http://localhost:3000`, entrá con Google y andá a **Ajustes →
+Cotización → Actualizar ahora** para cargar la primera cotización. Sin eso
+no se pueden cargar movimientos.
+
+### 6. Deploy en Vercel
+
+1. Subí el repo a GitHub.
+2. En [vercel.com](https://vercel.com) importá el repositorio.
+3. Cargá las cinco variables de entorno en **Settings → Environment
+   Variables**, con `NEXT_PUBLIC_SITE_URL` apuntando a la URL final del
+   deploy.
+4. Deploy.
+5. Volvé a Supabase → **Authentication → URL Configuration** y actualizá el
+   *Site URL* y las *Redirect URLs* con el dominio de Vercel.
+
+El cron ya está declarado en `vercel.json`:
+
+```json
+{ "crons": [{ "path": "/api/cron/fx", "schedule": "0 0 * * *" }] }
+```
+
+Corre a las **00:00 UTC**, que son las **21:00 de Argentina**. Vercel manda
+`Authorization: Bearer $CRON_SECRET`, y la ruta rechaza cualquier cosa que
+no coincida.
+
+> Los crons de Vercel se registran al hacer deploy en **producción**. En un
+> preview no se ejecutan.
+
+Para probarlo a mano:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" https://<tu-app>.vercel.app/api/cron/fx
+```
+
+### 7. Datos de ejemplo (opcional)
+
+Después de haber entrado por lo menos una vez con Google, ejecutá
+`supabase/seed.sql` desde el SQL Editor. Crea tres proyectos, doce meses de
+movimientos (con gastos compartidos para ver el prorrateo), un par de
+planificados y una recurrencia. Todo va prefijado con `[demo]` para que sea
+fácil de borrar; las instrucciones de limpieza están al principio del
+archivo.
+
+## Comandos
+
+```bash
+npm run dev        # servidor de desarrollo
+npm run build      # build de producción
+npm run start      # servir el build
+npm run lint       # eslint
+npm run typecheck  # tsc --noEmit
+```
+
+## Stack
+
+Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · shadcn/ui ·
+Supabase (Postgres + Auth + Storage) · Recharts · react-hook-form + Zod ·
+Vercel.
+
+Sin librerías de estado global ni ORM: el cliente de Supabase se usa
+directo, con tipos en `src/lib/supabase/database.types.ts`. Para
+regenerarlos desde el esquema real:
+
+```bash
+npx supabase gen types typescript --project-id <ref> > src/lib/supabase/database.types.ts
+```
+
+## Notas de seguridad
+
+- Todas las tablas de datos tienen RLS con `auth.uid() = user_id`.
+- `fx_rates` es global y de solo lectura para usuarios autenticados; la
+  escribe el cron con la service role key.
+- El bucket `comprobantes` es privado, con los archivos bajo
+  `<user_id>/…` y políticas que validan el primer segmento del path. Las
+  descargas van siempre por URL firmada.
+- `SUPABASE_SERVICE_ROLE_KEY` no lleva prefijo `NEXT_PUBLIC_` y solo se
+  importa desde módulos marcados con `server-only`.

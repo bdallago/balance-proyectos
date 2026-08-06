@@ -1,0 +1,122 @@
+# ─────────────────────────────────────────────────────────────
+# Secretos y credenciales — NADA de esto puede llegar a GitHub
+# ─────────────────────────────────────────────────────────────
+# Todos los .env quedan afuera; solo se versiona el ejemplo.
+.env
+.env.*
+!.env.example
+
+# Claves, certificados y tokens sueltos
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.asc
+*.gpg
+id_rsa*
+id_ed25519*
+secrets.json
+secrets.*.json
+credentials.json
+service-account*.json
+gha-creds-*.json
+*.tfvars
+*.tfstate
+*.tfstate.*
+
+# Estado local de las CLIs (contienen project ids y tokens de acceso)
+.vercel
+.netlify
+.supabase/
+supabase/.branches/
+supabase/.temp/
+supabase/config.toml.local
+.firebase/
+
+# Dumps y backups de base de datos (pueden traer datos reales)
+*.sql.gz
+*.dump
+*.bak
+dump.sql
+backup*.sql
+
+# ─────────────────────────────────────────────────────────────
+# Dependencias
+# ─────────────────────────────────────────────────────────────
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ─────────────────────────────────────────────────────────────
+# Build y artefactos
+# ─────────────────────────────────────────────────────────────
+/.next/
+/out/
+/build
+/dist
+*.tsbuildinfo
+next-env.d.ts
+.turbo/
+.swc/
+
+# ─────────────────────────────────────────────────────────────
+# Testing y cobertura
+# ─────────────────────────────────────────────────────────────
+/coverage
+/playwright-report
+/test-results
+/.nyc_output
+
+# ─────────────────────────────────────────────────────────────
+# Logs y debug
+# ─────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# ─────────────────────────────────────────────────────────────
+# Caches de herramientas
+# ─────────────────────────────────────────────────────────────
+.eslintcache
+.cache/
+.parcel-cache/
+.npm/
+
+# ─────────────────────────────────────────────────────────────
+# Editores y sistema operativo
+# ─────────────────────────────────────────────────────────────
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.idea/
+*.swp
+*.swo
+*~
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# ─────────────────────────────────────────────────────────────
+# Herramientas de agentes / scratch local
+# ─────────────────────────────────────────────────────────────
+.claude/settings.local.json
+scratch/
+tmp/
+*.local
