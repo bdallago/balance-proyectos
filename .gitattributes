@@ -1,0 +1,16 @@
+# Normaliza los saltos de línea: LF en el repo, lo nativo en el working copy.
+* text=auto eol=lf
+
+# Binarios: que Git no los toque.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+
+# El lockfile se genera solo: no ensucia los diffs en las review.
+package-lock.json -diff linguist-generated
