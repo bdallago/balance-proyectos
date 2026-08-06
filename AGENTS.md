@@ -71,6 +71,22 @@ El formulario muestra ARS y USD a la vez. El campo que se escribe define
 propósito** `monto_ars`/`monto_usd` de sus dependencias: incluirlos haría
 que se dispare con cada tecla y pise lo que se está escribiendo.
 
+## Cookies de sesión y el HTTP 431
+
+El `dev` y el `start` levantan Node con
+`--max-http-header-size=32768` (vía `cross-env`). No es decorativo: en
+`localhost` las cookies **se comparten entre todos los puertos**, así que
+los otros proyectos que tengas corriendo suman al mismo header y con el
+default de 16 KB el server contesta **431 Request Header Fields Too
+Large** apenas volvés del OAuth.
+
+Por el mismo motivo, `signInWithOAuth` **no** manda `access_type:
+offline` ni `prompt: consent`: eso hace que Google emita un refresh token
+que Supabase guarda dentro de la cookie de sesión (`provider_token` +
+`provider_refresh_token`). La app no usa ninguno de los dos. Si alguna vez
+hace falta llamar a una API de Google en nombre del usuario, hay que
+volver a activarlos y guardar esos tokens fuera de la cookie.
+
 ## Fechas
 
 Las columnas `date` se manejan siempre como strings `"YYYY-MM-DD"`. Nunca

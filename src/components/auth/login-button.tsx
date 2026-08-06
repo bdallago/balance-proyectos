@@ -42,12 +42,15 @@ export function LoginButton({ next }: { next?: string }) {
       const destino = next && next.startsWith("/") ? next : "/";
       const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(destino)}`;
 
+      // Sin `access_type: offline` ni `prompt: consent` a propósito: eso
+      // hace que Google emita un refresh token, que Supabase guarda dentro
+      // de la cookie de sesión (provider_token + provider_refresh_token).
+      // La app no usa ninguno de los dos —solo necesita la sesión de
+      // Supabase— y engordan la cookie hasta hacer que el server
+      // responda 431 (Request Header Fields Too Large).
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: {
-          redirectTo,
-          queryParams: { access_type: "offline", prompt: "consent" },
-        },
+        options: { redirectTo },
       });
 
       if (error) throw error;
