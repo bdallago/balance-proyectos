@@ -124,8 +124,11 @@ Copiá `.env.example` a `.env.local` y completá:
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Settings → API | Pública. |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Settings → API | Pública, protegida por RLS. |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API | **Secreta.** Saltea RLS. Solo server-side. |
-| `NEXT_PUBLIC_SITE_URL` | Vos | `http://localhost:3000` en local. |
 | `CRON_SECRET` | Vos | `openssl rand -hex 32` |
+
+No hace falta configurar la URL del sitio: el redirect del OAuth se arma
+con `window.location.origin`, así que anda igual en localhost, en los
+previews de Vercel y en producción.
 
 ```bash
 cp .env.example .env.local
@@ -146,9 +149,8 @@ no se pueden cargar movimientos.
 
 1. Subí el repo a GitHub.
 2. En [vercel.com](https://vercel.com) importá el repositorio.
-3. Cargá las cinco variables de entorno en **Settings → Environment
-   Variables**, con `NEXT_PUBLIC_SITE_URL` apuntando a la URL final del
-   deploy.
+3. Cargá las cuatro variables de entorno en **Settings → Environment
+   Variables**, para *Production*, *Preview* y *Development*.
 4. Deploy.
 5. Volvé a Supabase → **Authentication → URL Configuration** y actualizá el
    *Site URL* y las *Redirect URLs* con el dominio de Vercel.

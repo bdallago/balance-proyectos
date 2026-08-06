@@ -120,3 +120,8 @@ $RECYCLE.BIN/
 scratch/
 tmp/
 *.local
+
+# Nota: `vercel link` agrega ".vercel" y ".env*" al final de este archivo.
+# Ya están contemplados arriba, y ".env*" al final pisaría la excepción
+# de "!.env.example" (la última regla que matchea gana). Si volvés a
+# correr `vercel link`, borrá lo que agregue al pie.
