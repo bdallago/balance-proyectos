@@ -174,7 +174,27 @@ Para probarlo a mano:
 curl -H "Authorization: Bearer $CRON_SECRET" https://<tu-app>.vercel.app/api/cron/fx
 ```
 
-### 7. Datos de ejemplo (opcional)
+### 7. Cargar el historial de cotizaciones (recomendado)
+
+El cron guarda **la cotización del día**, así que una instalación nueva
+arranca sin historial: si cargás un movimiento de hace tres meses, se le va
+a aplicar la única tasa que existe. Para que las cargas retroactivas usen
+la tasa que de verdad correspondía, conviene backfillear la serie.
+
+`dolarapi.com` solo devuelve la cotización actual. La serie histórica está
+en `api.argentinadatos.com`, que es de la misma familia:
+
+```bash
+curl -s https://api.argentinadatos.com/v1/cotizaciones/dolares/oficial \
+  > oficial.json
+```
+
+Cada elemento es `{ casa, compra, venta, fecha }`, así que el mapeo a
+`fx_rates` es directo. Insertalos con la service role key (la tabla es de
+solo lectura vía RLS), en lotes y con `Prefer: resolution=merge-duplicates`
+para que sea idempotente.
+
+### 8. Datos de ejemplo (opcional)
 
 Después de haber entrado por lo menos una vez con Google, ejecutá
 `supabase/seed.sql` desde el SQL Editor. Crea tres proyectos, doce meses de
