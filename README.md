@@ -219,6 +219,16 @@ Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · shadcn/ui ·
 Supabase (Postgres + Auth + Storage) · Recharts · react-hook-form + Zod ·
 Vercel.
 
+Tipografía **Fira Sans + Fira Code**. El mono no es decorativo: la clase
+`.cifra` lo aplica a montos, fechas y cotizaciones para que las columnas
+de plata aliñen en vertical.
+
+La paleta de gráficos está **validada para daltonismo y contraste** en
+modo claro y oscuro. Ingresos y egresos van en teal↔naranja y no en
+verde/rojo: verde/rojo mide ΔE 6.9 (banda de riesgo) contra 15.9 del par
+elegido. Si cambiás las superficies, hay que revalidar — el contraste se
+mide contra el fondo real.
+
 Sin librerías de estado global ni ORM: el cliente de Supabase se usa
 directo, con tipos en `src/lib/supabase/database.types.ts`. Para
 regenerarlos desde el esquema real:

@@ -23,8 +23,20 @@ npm run lint       # eslint
 npm run typecheck  # tsc --noEmit
 ```
 
-No hay suite de tests. Antes de dar algo por terminado, corré
+No hay suite de tests versionada. Antes de dar algo por terminado, corré
 `npm run typecheck && npm run lint && npm run build`.
+
+Para probar las pantallas privadas hace falta una sesión, y la app entra
+**solo con Google OAuth**, así que no se puede automatizar el login. La
+vuelta que funciona: pedirle a Supabase un magic link de admin con la
+service role key, seguir el `action_link` con `redirect: "manual"` (el 303
+trae los tokens en el fragmento) y armar a mano la cookie de
+`@supabase/ssr` — `sb-<ref>-auth-token`, valor `"base64-" + base64(JSON)`,
+partida en chunks de 3180 caracteres. Con eso Playwright entra sin tocar
+ninguna credencial.
+
+Ojo: el `hashed_token` de `generate_link` **no** se canjea por
+`POST /auth/v1/verify` (ese espera el OTP crudo y devuelve `otp_expired`).
 
 ## Versión de Next
 
@@ -94,20 +106,56 @@ Las columnas `date` se manejan siempre como strings `"YYYY-MM-DD"`. Nunca
 anterior. Usá los helpers de `src/lib/dates.ts`, que trabajan a mediodía
 local.
 
+## Sistema de diseño
+
+Los tokens de `globals.css` no son genéricos: salen del ADN que comparten
+los otros proyectos de Beno (Voltio, HRKit/Gentius y su portfolio).
+
+- **Fondo crema, nunca blanco puro.** Las superficies son tono sobre tono
+  (`--oat` de página, `--crema` de tarjeta). Si aparece `#fff` en una
+  superficie, está mal.
+- **Verde profundo de tinta** (`--cambodia`), **teal de marca**
+  (`--teal`, el `#236E6D` que aparece igual en Voltio y HRKit) y **un solo
+  acento cálido** (`--mango`).
+- Modo oscuro **elegido, no volteado**: verde-negro derivado del cambodia.
+  Un gris neutro rompe la familia.
+
+Tipografía: **Fira Sans + Fira Code**, las del portfolio. La clase
+`.cifra` pone Fira Code con figuras tabulares en montos, fechas y
+cotizaciones — no es decorativo, es un libro de cuentas y las columnas de
+plata tienen que alinear en vertical.
+
+> Cuidado con los reemplazos masivos: cambiar `tabular-nums` por `cifra`
+> en todo el repo rompe la propia definición en `globals.css`
+> (`font-variant-numeric: cifra`). Excluí el CSS de ese tipo de `sed`.
+
 ## Gráficos
 
 La paleta está en `globals.css` (`--chart-1..8`, `--chart-ingreso`,
-`--chart-egreso`) y **está validada** para daltonismo y contraste en ambos
-modos con el validador de la skill `dataviz`. Si cambiás colores, revalidá.
+`--chart-egreso`) y **está validada** con el validador de la skill
+`dataviz` contra las superficies reales: `#FFFDF5` en claro y `#1B241E`
+en oscuro.
+
+**Si cambiás el fondo, revalidá.** El contraste se mide contra la
+superficie, no en abstracto: al pasar de blanco a crema hubo que correr
+el validador de nuevo.
 
 - Los ocho tonos categóricos se asignan **en orden fijo, nunca ciclados**.
-  A partir del octavo, todo va a "Otras".
-- Ingresos/egresos usan el par divergente **azul↔rojo**, no verde/rojo:
-  verde/rojo mide ΔE 6.9 para daltonismo (banda de riesgo) contra 21.6 del
-  par elegido.
-- En modo claro, aqua/amarillo/magenta quedan bajo 3:1 de contraste. Por
-  eso el gráfico de torta lleva siempre la lista con nombre y monto al
-  lado: la identidad no puede depender solo del color.
+  A partir del octavo, todo va a "Otras". Los dos primeros son los de
+  marca. Peor par adyacente: ΔE 15.9 en claro, 13.0 en oscuro.
+- Ingresos/egresos usan el par de marca **teal↔naranja** (ΔE 15.9 para
+  daltonismo, 29.1 de visión normal). Verde/rojo, lo esperable en
+  finanzas, mide 6.9 y está descartado.
+- **El teal de marca no sirve como color de datos.** `#236E6D` tiene croma
+  0.072 contra un piso de 0.1: como marca de gráfico se lee gris. El
+  `--chart-1` es `#008F8F`, el mismo tono con la croma subida.
+- En modo claro, amarillo y magenta quedan bajo 3:1. Por eso el gráfico de
+  torta lleva siempre la lista con nombre y monto al lado: la identidad no
+  puede depender solo del color.
+
+El selector de color de proyecto en Ajustes ofrece **estos mismos ocho
+tonos** y no un picker libre, justamente para que los gráficos no se
+llenen de colores sin validar.
 
 Recharts necesita colores concretos, no variables CSS: `useChartTheme()`
 las lee del documento y las relee cuando cambia el tema.
