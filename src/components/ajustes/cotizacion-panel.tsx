@@ -63,13 +63,13 @@ export function CotizacionPanel({ ultimaTasa }: { ultimaTasa: FxRate | null }) {
             <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
               <div>
                 <p className="text-muted-foreground text-xs">Venta (la que se usa)</p>
-                <p className="text-2xl font-semibold tabular-nums">
+                <p className="text-2xl font-semibold cifra">
                   {formatRate(Number(ultimaTasa.venta))}
                 </p>
               </div>
               <div>
                 <p className="text-muted-foreground text-xs">Compra</p>
-                <p className="text-lg tabular-nums">
+                <p className="text-lg cifra">
                   {formatRate(Number(ultimaTasa.compra))}
                 </p>
               </div>

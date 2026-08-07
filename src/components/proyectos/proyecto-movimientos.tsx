@@ -102,7 +102,7 @@ export function ProyectoMovimientos({
                         "bg-muted/40 border-l-muted-foreground/30 border-l-2",
                     )}
                   >
-                    <TableCell className="whitespace-nowrap tabular-nums">
+                    <TableCell className="whitespace-nowrap cifra">
                       {formatDate(item.movement.fecha)}
                     </TableCell>
 
@@ -134,9 +134,9 @@ export function ProyectoMovimientos({
 
                     <TableCell
                       className={cn(
-                        "text-right font-medium whitespace-nowrap tabular-nums",
+                        "text-right font-medium whitespace-nowrap cifra",
                         item.movement.tipo === "ingreso"
-                          ? "text-emerald-600 dark:text-emerald-500"
+                          ? "text-positivo"
                           : "text-foreground",
                       )}
                     >

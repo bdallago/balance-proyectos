@@ -34,6 +34,29 @@ const NAV = [
   { href: "/ajustes", label: "Ajustes", icon: Settings },
 ] as const;
 
+/**
+ * Marca de la app: dos barras enfrentadas, ingreso arriba y egreso abajo,
+ * en los mismos dos colores que usan los gráficos.
+ *
+ * Reemplaza al wordmark "Balance", que repetía el nombre del primer ítem
+ * del menú. Un logo que dice lo mismo que el botón de al lado no ancla
+ * nada; esto sí dice de qué se trata la app.
+ */
+function Marca() {
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      aria-hidden="true"
+      className="shrink-0"
+    >
+      <rect x="2" y="4" width="18" height="6" rx="2" fill="var(--chart-ingreso)" />
+      <rect x="2" y="12" width="11" height="6" rx="2" fill="var(--chart-egreso)" />
+    </svg>
+  );
+}
+
 function esRutaActiva(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -107,8 +130,12 @@ export function AppShell({
             </SheetContent>
           </Sheet>
 
-          <Link href="/" className="mr-2 hidden items-center gap-2 md:flex">
-            <span className="text-sm font-semibold tracking-tight">Balance</span>
+          <Link
+            href="/"
+            aria-label="Ir al balance general"
+            className="mr-3 hidden items-center md:flex"
+          >
+            <Marca />
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">

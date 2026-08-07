@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-fira-sans);
+  --font-mono: var(--font-fira-code);
+  --font-heading: var(--font-fira-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -18,6 +18,7 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+  --color-positivo: var(--positivo);
   --color-chart-8: var(--chart-8);
   --color-chart-7: var(--chart-7);
   --color-chart-6: var(--chart-6);
@@ -57,106 +58,142 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  /* ── Paleta de gráficos (modo claro, superficie #ffffff) ──
-   * Orden fijo, nunca ciclado. Validado para daltonismo:
-   * peor par adyacente ΔE 9.1 (protan), piso de visión normal 19.6.
-   * Aqua, amarillo y magenta quedan bajo 3:1 contra el fondo claro:
-   * por eso los gráficos que los usan llevan etiquetas visibles. */
-  --chart-1: #2a78d6; /* azul */
-  --chart-2: #eb6834; /* naranja */
-  --chart-3: #1baf7a; /* aqua */
+  /* ═══════════════════════════════════════════════════════════
+     Sistema de diseño — heredado de Voltio, HRKit (Gentius) y
+     el portfolio de Beno.
+
+     Lo que los tres comparten y acá se respeta:
+     · Fondo crema, nunca blanco puro. Las superficies son tono
+       sobre tono (regla "cero blanco" de Gentius).
+     · Verde profundo como tinta principal.
+     · Teal de marca (#236E6D aparece igual en Voltio y HRKit).
+     · Naranja cálido como única acción.
+     ═══════════════════════════════════════════════════════════ */
+
+  /* Marca */
+  --oat: #faf8f2;        /* fondo de página (portfolio) */
+  --crema: #fffdf5;      /* superficie de tarjetas */
+  --cambodia: #264228;   /* verde profundo: tinta principal */
+  --teal: #236e6d;       /* marca, títulos, ítem activo */
+  --teal-claro: #3b8a88; /* links y focus ring */
+  --salvia: #a2c2be;     /* superficie apagada */
+  --mango: #d63f00;      /* acción: un solo acento cálido */
+
+  /* shadcn mapeado a la marca */
+  --background: var(--oat);
+  --foreground: var(--cambodia);
+  --card: var(--crema);
+  --card-foreground: var(--cambodia);
+  --popover: var(--crema);
+  --popover-foreground: var(--cambodia);
+  --primary: var(--mango);
+  --primary-foreground: #fffdf5;
+  --secondary: #f1eee1;
+  --secondary-foreground: var(--cambodia);
+  --muted: #f1eee1;
+  --muted-foreground: #5c6b6a;
+  --accent: #e6efec;     /* velo salvia para hover y selección */
+  --accent-foreground: var(--teal);
+  --destructive: #b3260d;
+  --border: #e4e0cf;
+  --input: #e4e0cf;
+  --ring: var(--teal-claro);
+
+  /* Positivo: verde de marca, nunca el verde genérico de "success". */
+  --positivo: #1d6b4a;
+
+  /* ── Paleta de gráficos (claro, superficie #FFFDF5) ──
+   * Orden fijo, nunca ciclado. Arranca con los dos tonos de marca.
+   * Revalidada contra la superficie crema: peor par adyacente
+   * ΔE 15.9 (deutan), piso de visión normal 19.6.
+   * Amarillo y magenta quedan bajo 3:1, así que los gráficos que
+   * los usan llevan siempre etiqueta con nombre y monto. */
+  --chart-1: #008f8f; /* teal de marca, con la croma subida a 0.12
+                         porque el #236E6D original se lee gris
+                         como marca de datos (croma 0.072) */
+  --chart-2: #d63f00; /* naranja de marca */
+  --chart-3: #2a78d6; /* azul */
   --chart-4: #eda100; /* amarillo */
   --chart-5: #e87ba4; /* magenta */
   --chart-6: #008300; /* verde */
   --chart-7: #4a3aa7; /* violeta */
   --chart-8: #e34948; /* rojo */
 
-  /* Ingresos vs egresos: par divergente azul↔rojo.
-   * Se descartó verde/rojo: cae en la banda de riesgo de daltonismo
-   * (ΔE 6.9) mientras que azul/rojo da 21.6. */
-  --chart-ingreso: #2a78d6;
-  --chart-egreso: #e34948;
+  /* Ingresos vs egresos: el par de marca teal↔naranja.
+   * Validado en todos los pares: ΔE 15.9 para daltonismo, 29.1 de
+   * visión normal. Verde/rojo, que sería lo esperable en finanzas,
+   * da ΔE 6.9 y queda descartado. */
+  --chart-ingreso: #008f8f;
+  --chart-egreso: #d63f00;
 
   /* Cromo del gráfico: recesivo, nunca compite con los datos. */
-  --chart-grid: #e1e0d9;
-  --chart-axis: #c3c2b7;
-  --chart-label: #898781;
+  --chart-grid: #e8e4d5;
+  --chart-axis: #cfcab5;
+  --chart-label: #7d8a84;
 
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: var(--crema);
+  --sidebar-foreground: var(--cambodia);
+  --sidebar-primary: var(--teal);
+  --sidebar-primary-foreground: #fffdf5;
+  --sidebar-accent: #e6efec;
+  --sidebar-accent-foreground: var(--teal);
+  --sidebar-border: #e4e0cf;
+  --sidebar-ring: var(--teal-claro);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  /* ── Paleta de gráficos (modo oscuro, superficie #171717) ──
-   * Mismos ocho tonos re-escalonados para el fondo oscuro, no un
-   * volteo automático. Peor par adyacente ΔE 8.4, todos ≥ 3:1. */
-  --chart-1: #3987e5;
-  --chart-2: #d95926;
-  --chart-3: #199e70;
+  /* Modo oscuro elegido, no volteado: el fondo es un verde-negro
+     derivado del cambodia, y el texto un crema cálido que ecoa al
+     oat. Un gris neutro rompería la familia. */
+  --background: #131a16;
+  --foreground: #edeae0;
+  --card: #1b241e;
+  --card-foreground: #edeae0;
+  --popover: #1b241e;
+  --popover-foreground: #edeae0;
+  --primary: #f0703a;
+  --primary-foreground: #1a120d;
+  --secondary: #24302a;
+  --secondary-foreground: #edeae0;
+  --muted: #24302a;
+  --muted-foreground: #9aa8a2;
+  --accent: #24302a;
+  --accent-foreground: #7fbfb8;
+  --destructive: #e8735c;
+  --border: #edeae01a;
+  --input: #edeae026;
+  --ring: #4fa8a2;
+
+  --positivo: #4fbf8b;
+
+  /* ── Paleta de gráficos (oscuro, superficie #1B241E) ──
+   * Los mismos ocho tonos re-escalonados para el fondo verde-negro.
+   * Peor par adyacente ΔE 13.0, todos por encima de 3:1. */
+  --chart-1: #00a09e;
+  --chart-2: #e06636;
+  --chart-3: #3987e5;
   --chart-4: #c98500;
   --chart-5: #d55181;
   --chart-6: #008300;
   --chart-7: #9085e9;
   --chart-8: #e66767;
 
-  --chart-ingreso: #3987e5;
-  --chart-egreso: #e66767;
+  --chart-ingreso: #00a09e;
+  --chart-egreso: #e06636;
 
-  --chart-grid: #2c2c2a;
-  --chart-axis: #383835;
-  --chart-label: #898781;
+  --chart-grid: #2a352e;
+  --chart-axis: #38453d;
+  --chart-label: #8b9992;
 
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar: #1b241e;
+  --sidebar-foreground: #edeae0;
+  --sidebar-primary: #4fa8a2;
+  --sidebar-primary-foreground: #131a16;
+  --sidebar-accent: #24302a;
+  --sidebar-accent-foreground: #7fbfb8;
+  --sidebar-border: #edeae01a;
+  --sidebar-ring: #4fa8a2;
 }
 
 @layer base {
@@ -168,5 +205,36 @@
   }
   html {
     @apply font-sans;
+  }
+
+  /* Los títulos van un punto más apretados: Fira Sans abre bastante y
+     en tamaños grandes se desarma. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.015em;
+  }
+}
+
+@layer components {
+  /* ── Cifras ──────────────────────────────────────────────────
+     Toda la plata, las fechas y las cotizaciones van en Fira Code
+     con figuras tabulares. No es decoración: en un libro de cuentas
+     las columnas de números tienen que alinear en vertical, y con
+     una proporcional no alinean nunca. Es también lo que separa a
+     esta app de un dashboard genérico. */
+  .cifra {
+    font-family: var(--font-fira-code), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  /* Etiqueta de sección: versalita ancha, del vocabulario del
+     portfolio. Se usa en los encabezados de las listas de Ajustes. */
+  .rotulo {
+    font-family: var(--font-fira-code), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 }

@@ -46,16 +46,22 @@ import { projectSchema, type ProjectInput } from "@/lib/schemas";
 import { calcularParticipaciones } from "@/lib/prorrateo";
 import type { Project } from "@/lib/supabase/database.types";
 
-/** Los ocho tonos validados de la paleta, para elegir color de proyecto. */
+/**
+ * Los ocho tonos de la paleta de gráficos, en el mismo orden.
+ *
+ * Que el color del proyecto salga de acá y no de un picker libre es lo que
+ * mantiene los gráficos legibles: son tonos ya validados para daltonismo y
+ * contraste contra las superficies de la app.
+ */
 const COLORES = [
-  "#2a78d6",
-  "#eb6834",
-  "#1baf7a",
-  "#eda100",
-  "#e87ba4",
-  "#008300",
-  "#4a3aa7",
-  "#e34948",
+  "#008f8f", // teal de marca
+  "#d63f00", // naranja de marca
+  "#2a78d6", // azul
+  "#eda100", // amarillo
+  "#e87ba4", // magenta
+  "#008300", // verde
+  "#4a3aa7", // violeta
+  "#e34948", // rojo
 ] as const;
 
 export function ProyectosPanel() {
@@ -297,7 +303,7 @@ function ProyectoDialog({
               step="0.1"
               min="0.1"
               {...register("peso_prorrateo", { valueAsNumber: true })}
-              className="tabular-nums"
+              className="cifra"
             />
             <p className="text-muted-foreground text-xs">
               1 en todos los proyectos = partes iguales.

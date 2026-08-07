@@ -334,7 +334,7 @@ export function MovementForm({
             onChange={(e) => escribirMonto("ARS", e.target.value)}
             placeholder="0"
             className={cn(
-              "tabular-nums",
+              "cifra",
               monedaOrigen === "USD" && "text-muted-foreground",
             )}
           />
@@ -356,7 +356,7 @@ export function MovementForm({
             onChange={(e) => escribirMonto("USD", e.target.value)}
             placeholder="0,00"
             className={cn(
-              "tabular-nums",
+              "cifra",
               monedaOrigen === "ARS" && "text-muted-foreground",
             )}
           />
@@ -404,7 +404,7 @@ export function MovementForm({
             id="tasa"
             inputMode="decimal"
             {...register("tasa_texto")}
-            className="tabular-nums"
+            className="cifra"
           />
         </div>
       ) : null}

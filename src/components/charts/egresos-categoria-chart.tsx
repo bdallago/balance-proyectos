@@ -122,10 +122,10 @@ export function EgresosCategoriaChart({
             <span className="text-muted-foreground min-w-0 flex-1 truncate">
               {porcion.nombre}
             </span>
-            <span className="text-muted-foreground tabular-nums">
+            <span className="text-muted-foreground cifra">
               {((porcion.total / total) * 100).toFixed(0)}%
             </span>
-            <span className="w-24 text-right font-medium tabular-nums">
+            <span className="w-24 text-right font-medium cifra">
               {formatMoney(porcion.total, moneda)}
             </span>
           </li>

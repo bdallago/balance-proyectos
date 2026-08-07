@@ -30,8 +30,8 @@ function StatCard({
         </div>
         <p
           className={cn(
-            "mt-2 text-2xl font-semibold tracking-tight tabular-nums",
-            acento === "positivo" && "text-emerald-600 dark:text-emerald-500",
+            "mt-2 text-2xl font-semibold tracking-tight cifra",
+            acento === "positivo" && "text-positivo",
             acento === "negativo" && "text-destructive",
           )}
         >

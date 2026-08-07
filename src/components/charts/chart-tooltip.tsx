@@ -38,7 +38,7 @@ export function ChartTooltip({
               style={{ backgroundColor: item.color }}
             />
             <span className="text-muted-foreground flex-1">{item.nombre}</span>
-            <span className="font-medium tabular-nums">
+            <span className="font-medium cifra">
               {formatMoney(item.valor, moneda)}
             </span>
           </li>
@@ -47,7 +47,7 @@ export function ChartTooltip({
       {total !== undefined ? (
         <p className="mt-1.5 flex justify-between border-t pt-1.5">
           <span className="text-muted-foreground">Total</span>
-          <span className="font-medium tabular-nums">
+          <span className="font-medium cifra">
             {formatMoney(total, moneda)}
           </span>
         </p>

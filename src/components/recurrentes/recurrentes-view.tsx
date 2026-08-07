@@ -139,7 +139,7 @@ export function RecurrentesView({
 
                   <p className="text-muted-foreground text-xs">
                     {recurrencia.moneda_origen}{" "}
-                    <span className="tabular-nums">
+                    <span className="cifra">
                       {formatAmount(
                         Number(recurrencia.monto_origen),
                         recurrencia.moneda_origen,

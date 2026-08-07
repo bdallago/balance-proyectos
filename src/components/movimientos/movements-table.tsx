@@ -375,13 +375,13 @@ export function MovementsTable({ movements }: { movements: Movement[] }) {
         <span>{filtrados.length} movimientos</span>
         <span>
           Ingresos:{" "}
-          <span className="text-foreground font-medium tabular-nums">
+          <span className="text-foreground font-medium cifra">
             {formatMoney(totales.ingresos, moneda)}
           </span>
         </span>
         <span>
           Egresos:{" "}
-          <span className="text-foreground font-medium tabular-nums">
+          <span className="text-foreground font-medium cifra">
             {formatMoney(totales.egresos, moneda)}
           </span>
         </span>
@@ -389,9 +389,9 @@ export function MovementsTable({ movements }: { movements: Movement[] }) {
           Balance:{" "}
           <span
             className={cn(
-              "font-medium tabular-nums",
+              "font-medium cifra",
               totales.balance >= 0
-                ? "text-emerald-600 dark:text-emerald-500"
+                ? "text-positivo"
                 : "text-destructive",
             )}
           >
@@ -455,7 +455,7 @@ export function MovementsTable({ movements }: { movements: Movement[] }) {
 
                 return (
                   <TableRow key={m.id}>
-                    <TableCell className="whitespace-nowrap tabular-nums">
+                    <TableCell className="whitespace-nowrap cifra">
                       {formatDate(m.fecha)}
                     </TableCell>
 
@@ -504,9 +504,9 @@ export function MovementsTable({ movements }: { movements: Movement[] }) {
 
                     <TableCell
                       className={cn(
-                        "text-right font-medium whitespace-nowrap tabular-nums",
+                        "text-right font-medium whitespace-nowrap cifra",
                         m.tipo === "ingreso"
-                          ? "text-emerald-600 dark:text-emerald-500"
+                          ? "text-positivo"
                           : "text-foreground",
                       )}
                     >

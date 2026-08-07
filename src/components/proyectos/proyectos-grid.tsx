@@ -100,9 +100,9 @@ export function ProyectosGrid({ movements }: { movements: Movement[] }) {
 
                   <p
                     className={cn(
-                      "mt-3 text-xl font-semibold tabular-nums",
+                      "mt-3 text-xl font-semibold cifra",
                       proyecto.balance >= 0
-                        ? "text-emerald-600 dark:text-emerald-500"
+                        ? "text-positivo"
                         : "text-destructive",
                     )}
                   >
@@ -112,13 +112,13 @@ export function ProyectosGrid({ movements }: { movements: Movement[] }) {
                   <dl className="text-muted-foreground mt-2 grid grid-cols-2 gap-1 text-xs">
                     <div>
                       <dt className="inline">Ingresos: </dt>
-                      <dd className="inline tabular-nums">
+                      <dd className="inline cifra">
                         {formatMoney(proyecto.ingresos, moneda)}
                       </dd>
                     </div>
                     <div>
                       <dt className="inline">Egresos: </dt>
-                      <dd className="inline tabular-nums">
+                      <dd className="inline cifra">
                         {formatMoney(proyecto.egresos, moneda)}
                       </dd>
                     </div>
@@ -164,7 +164,7 @@ function ComprobacionInvariante({
     return (
       <p className="text-muted-foreground text-xs">
         La suma de los balances por proyecto coincide con el balance general:{" "}
-        <span className="tabular-nums">
+        <span className="cifra">
           {formatMoney(balanceGeneral, moneda)}
         </span>
         .
@@ -175,7 +175,7 @@ function ComprobacionInvariante({
   return (
     <p className="text-xs text-amber-600 dark:text-amber-500">
       La suma por proyecto difiere del balance general en{" "}
-      <span className="tabular-nums">{formatMoney(diferencia, moneda)}</span>
+      <span className="cifra">{formatMoney(diferencia, moneda)}</span>
       {esperada
         ? ": son los gastos compartidos que no se pueden repartir por no haber proyectos activos."
         : "."}

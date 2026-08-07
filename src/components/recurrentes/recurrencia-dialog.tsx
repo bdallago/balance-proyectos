@@ -169,7 +169,7 @@ export function RecurrenciaDialog({
                 step="0.01"
                 min="0"
                 {...register("monto_origen", { valueAsNumber: true })}
-                className="tabular-nums"
+                className="cifra"
               />
               {formState.errors.monto_origen ? (
                 <p className="text-destructive text-xs">
@@ -209,7 +209,7 @@ export function RecurrenciaDialog({
                 min="1"
                 max="31"
                 {...register("dia_del_mes", { valueAsNumber: true })}
-                className="tabular-nums"
+                className="cifra"
               />
             </div>
 
